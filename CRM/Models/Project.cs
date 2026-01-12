@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace CRM.Models
 {
     public class Project
@@ -21,16 +20,14 @@ namespace CRM.Models
 
         public virtual Client Client { get; set; }
 
-        public virtual ICollection<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();
+        public virtual ICollection<ProjectTask> Tasks { get; set; }
 
         public double Progress
         {
             get
             {
-                if (Tasks == null || !Tasks.Any()) 
-                    return 0;
-                return Math.Round(
-                    (double)Tasks.Count(t => t.IsCompleted) / Tasks.Count * 100, 2);
+                if (Tasks == null || !Task.Any()) return 0;
+                return Math.Round((double)Tasks.Count(t => t.IsCompleted) / Tasks.Count * 100, 2);
             }
         }
     }
