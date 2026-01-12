@@ -13,7 +13,9 @@ namespace CRM.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime DueDate { get; set; }
 
-        public bool IsComplted  { get; set; }
+        public bool IsCompleted  { get; set; }
+
+        public DateTime? CompletedDate { get; set; }
 
         public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
