@@ -1,0 +1,110 @@
+﻿@model IEnumerable<CRM.Models.ProjectTask>
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            @if (ViewBag.ProjectName != null)
+            {
+                <span>Tasks for @ViewBag.ProjectName</span>
+            }
+            else
+            {
+                <span>All Tasks</span>
+            }
+        </h2>
+        <a asp-action="Create" asp-route-projectId="@ViewBag.ProjectId" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Task
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No tasks found. Create your first task!
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Active Tasks (@Model.Count(t => !t.IsCompleted))</h4>
+                <div class="list-group mb-4">
+                    @foreach (var task in Model.Where(t => !t.IsCompleted))
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">@task.Title</h6>
+                                <span class="badge @(task.Priority == CRM.Models.TaskPriority.Urgent ? "bg-danger" :
+                                                                                           task.Priority == CRM.Models.TaskPriority.High ? "bg-warning" :
+                                                                                           task.Priority == CRM.Models.TaskPriority.Medium ? "bg-info" : "bg-secondary")">
+                                    @task.Priority
+                                </span>
+                            </div>
+                            <p class="mb-1 small">@task.Description</p>
+                            <p class="mb-1 small text-muted">
+                                Project: <strong>@task.Project?.Name</strong><br />
+                                Due: @(task.DueDate == default(DateTime) ? "No due date" : task.DueDate.ToShortDateString())
+                            </p>
+                            <div class="mt-2">
+                                <form asp-action="ToggleComplete" asp-route-id="@task.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-check-circle"></i> Complete
+                                    </button>
+                                </form>
+                                <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@task.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete this task?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Completed Tasks (@Model.Count(t => t.IsCompleted))</h4>
+                <div class="list-group">
+                    @foreach (var task in Model.Where(t => t.IsCompleted))
+                    {
+                        <div class="list-group-item bg-light">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1 text-decoration-line-through text-muted">@task.Title</h6>
+                                <span class="badge bg-success">Completed</span>
+                            </div>
+                            <p class="mb-1 small text-muted">@task.Description</p>
+                            <p class="mb-1 small text-muted">
+                                Project: <strong>@task.Project?.Name</strong><br />
+                                Completed: @task.CompletedDate?.ToShortDateString()
+                            </p>
+                            <div class="mt-2">
+                                <form asp-action="ToggleComplete" asp-route-id="@task.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reopen
+                                    </button>
+                                </form>
+                                <form asp-action="Delete" asp-route-id="@task.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete this task?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

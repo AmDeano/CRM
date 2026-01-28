@@ -1,0 +1,91 @@
+﻿@model CRM.Models.Client
+@{
+    ViewData["Title"] = "Client Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@Model.Name</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Contact Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.EmailAddress</dd>
+
+                <dt class="col-sm-3">Phone</dt>
+                <dd class="col-sm-9">@Model.Phone</dd>
+
+                <dt class="col-sm-3">Address</dt>
+                <dd class="col-sm-9">@Model.Address</dd>
+
+                <dt class="col-sm-3">Created Date</dt>
+                <dd class="col-sm-9">@Model.CreatedDate.ToString("MMMM dd, yyyy")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Projects (@Model.Projects?.Count())</h5>
+            <a asp-controller="Projects" asp-action="Create" asp-route-clientId="@Model.Id" class="btn btn-sm btn-success">
+                <i class="bi bi-plus"></i> New Project
+            </a>
+        </div>
+        <div class="card-body">
+            @if (Model.Projects != null && Model.Projects.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>Progress</th>
+                                <th>Tasks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in Model.Projects)
+                            {
+                                <tr>
+                                    <td>@project.Name</td>
+                                    <td><span class="badge bg-info">@project.Status</span></td>
+                                    <td>@project.StartDate.ToShortDateString()</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 style="width: @project.Progress%"
+                                                 aria-valuenow="@project.Progress" aria-valuemin="0" aria-valuemax="100">
+                                                @project.Progress%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@project.Tasks?.Count() tasks</td>
+                                    <td>
+                                        <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id"
+                                           class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No projects yet for this client.</p>
+            }
+        </div>
+    </div>
+</div>

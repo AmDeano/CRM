@@ -1,0 +1,84 @@
+﻿@model IEnumerable<CRM.Models.Project>
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>All Projects</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Project
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No projects yet. Create your first project!
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>Progress</th>
+                        <th>Tasks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var project in Model)
+                    {
+                        <tr>
+                            <td><strong>@project.Name</strong></td>
+                            <td>@project.Client?.Name</td>
+                            <td>
+                                <span class="badge @(project.Status == CRM.Models.ProjectStatus.Completed ? "bg-success" :
+                                                                                           project.Status == CRM.Models.ProjectStatus.InProgress ? "bg-primary" :
+                                                                                           project.Status == CRM.Models.ProjectStatus.OnHold ? "bg-warning" :
+                                                                                           project.Status == CRM.Models.ProjectStatus.Cancelled ? "bg-danger" : "bg-secondary")">
+                                    @project.Status
+                                </span>
+                            </td>
+                            <td>@project.StartDate.ToShortDateString()</td>
+                            <td>
+                                <div class="progress" style="height: 25px; min-width: 100px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         style="width: @project.Progress%"
+                                         aria-valuenow="@project.Progress" aria-valuemin="0" aria-valuemax="100">
+                                        @project.Progress%
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">@project.Tasks?.Count() tasks</span>
+                                <small class="text-success">(@project.Tasks?.Count(t => t.IsCompleted) completed)</small>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@project.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Are you sure?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
