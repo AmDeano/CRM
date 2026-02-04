@@ -8,6 +8,10 @@ namespace CRM.Controllers
     {
         public IActionResult Index()
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Clients");
+            }
             return View();
         }
 
@@ -23,3 +27,4 @@ namespace CRM.Controllers
         }
     }
 }
+
