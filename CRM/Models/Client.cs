@@ -11,7 +11,7 @@ namespace CRM.Models
         public string Name { get; set; }
 
         [EmailAddress]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
 
         [Phone]
         public string Phone { get; set; }

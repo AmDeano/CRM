@@ -87,7 +87,7 @@ namespace CRM.Controllers
             if (ModelState.IsValid)
             {
                 existingClient.Name = client.Name;
-                existingClient.EmailAddress = client.EmailAddress;
+                existingClient.Email = client.Email;
                 existingClient.Phone = client.Phone;
                 existingClient.Address = client.Address;
 

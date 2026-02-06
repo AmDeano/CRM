@@ -17,6 +17,21 @@ namespace CRM.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // 🔒 FORCE Identity PK sizes (CRITICAL)
+            builder.Entity<IdentityUserLogin<string>>(entity =>
+            {
+                entity.Property(e => e.LoginProvider).HasMaxLength(450);
+                entity.Property(e => e.ProviderKey).HasMaxLength(450);
+            });
+
+            builder.Entity<IdentityUserToken<string>>(entity =>
+            {
+                entity.Property(e => e.LoginProvider).HasMaxLength(450);
+                entity.Property(e => e.Name).HasMaxLength(450);
+            });
+
+            // your relations (unchanged)
             builder.Entity<Client>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Clients)
@@ -35,5 +50,6 @@ namespace CRM.Data
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
+
     }
 }
